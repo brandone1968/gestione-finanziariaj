@@ -1,0 +1,77 @@
+div#footer{
+    bottom:0;
+    position:absolute;
+    width:100%;
+    text-align:center;
+}
+
+.spazio
+{
+    padding-top: 50px;  
+}
+
+.spazio15percento
+{
+    padding-top: 15%;  
+}
+
+.altezza18
+{
+    font-size: 18px;
+}
+
+.paging-nav {
+    text-align: left;
+    padding-top: 2px;
+}
+
+.paging-nav a {
+    margin: auto 1px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 6px 12px;
+    line-height: 1.42857;
+    color: #825671;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+.paging-nav .selected-page {
+    color: #fff;
+    background-color: #825671;
+    font-weight: bold;
+}
+
+.paging-nav,
+#tableData {
+
+}
+
+#tableDettaglioFattura {
+    border: 1px solid #4C366C; }
+    #tableDettaglioFattura > thead > tr > th,
+    #tableDettaglioFattura > thead > tr > td,
+    #tableDettaglioFattura > tbody > tr > th,
+    #tableDettaglioFattura > tbody > tr > td,
+    #tableDettaglioFattura > tfoot > tr > th,
+    #tableDettaglioFattura > tfoot > tr > td {
+
+    border: 0 !important;
+
+}
+.noAcapo{
+    float:right;
+    white-space:nowrap;
+}
+
+.errore {
+	color: #900;
+}
+
+.successo {
+	color: #008000;
+}
+
+.obbligatorio {
+	color: #8000ff;
+}
