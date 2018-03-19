@@ -1,21 +1,23 @@
 package com.finanziaria.beans;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Fattura {
 
-    private Integer   id;
-    private Integer   numFattura;
-    private String    descrizione;
-    private LocalDate dataFattura;
-    private LocalDate dataPagamento;
-    private Float     imponibile;
-    private Float     percentualeIVA;
-    private Float     iva;
-    private Float     totFattura;
-    private Ditta     ditta1;
-    private Ditta     ditta2;
-    private String    noteFattura;
+    private Integer                id;
+    private Integer                numFattura;
+    private String                 descrizione;
+    private LocalDate              dataFattura;
+    private LocalDate              dataPagamento;
+    private Float                  imponibile;
+    private Float                  percentualeIVA;
+    private Float                  iva;
+    private Float                  totFattura;
+    private Ditta                  ditta1;
+    private Ditta                  ditta2;
+    private String                 noteFattura;
+    private List<DettaglioFattura> dettagliFattura;
 
     public Integer getId() {
         return id;
@@ -111,6 +113,14 @@ public class Fattura {
 
     public void setNoteFattura( String noteFattura ) {
         this.noteFattura = noteFattura;
+    }
+
+    public List<DettaglioFattura> getDettagliFattura() {
+        return dettagliFattura;
+    }
+
+    public void setDettagliFattura( List<DettaglioFattura> dettagliFattura ) {
+        this.dettagliFattura = dettagliFattura;
     }
 
 }

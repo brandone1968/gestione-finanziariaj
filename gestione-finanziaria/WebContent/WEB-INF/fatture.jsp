@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -83,7 +84,8 @@
                     <td class="text-left" ><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><c:out value="${ fattura.ditta1.denominazione }" /></a></td>
                     <td class="text-left"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><c:out value="${ fattura.ditta2.denominazione }" /></a></td>
                     <td class="text-left"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><c:out value="${ fattura.totFattura }" /></a></td>
-                    <td class="text-center"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><c:out value="${ fattura.dataFattura }" /></a></td>
+                    <fmt:parseDate pattern="yyyy-MM-dd" value="${fattura.dataFattura}" var="dataFattura" />
+                    <td class="text-center"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><fmt:formatDate value="${dataFattura}" pattern="dd/MM/yyyy" /></a></td>
 
 					<c:choose>
 						<c:when test="${fattura.dataPagamento == null}">
@@ -93,7 +95,8 @@
 	                        <td class="text-center"><a href="#"><i class="fa fa-file-pdf-o" aria-hidden="true" data-toggle="tooltip" title="Visualizza"></i></a></td>
 						</c:when>
 						<c:otherwise>
-                        	<td class="text-center"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><c:out value="${ fattura.dataPagamento }" /></a></td>
+							<fmt:parseDate pattern="yyyy-MM-dd" value="${fattura.dataPagamento}" var="dataPagamento" />
+                        	<td class="text-center"><a title="Dettagli fattura" href="<c:url value="/fattura"><c:param name = "idFattura" value ="${ fattura.id }" /></c:url>"><fmt:formatDate value="${dataPagamento}" pattern="dd/MM/yyyy" /></a></td>
                         	<td colspan="3" class="text-center"><a href="#"><i class="fa fa-file-pdf-o" aria-hidden="true" data-toggle="tooltip" title="Visualizza"></i></a></td>
 						</c:otherwise>
 					</c:choose>

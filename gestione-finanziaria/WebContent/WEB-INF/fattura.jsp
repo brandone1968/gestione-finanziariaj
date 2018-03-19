@@ -54,7 +54,7 @@
              </tr>
         </thead>
         
-        <c:forEach var="dettaglioFattura" items="${ dettagli }">
+        <c:forEach var="dettaglioFattura" items="${ fattura.dettagliFattura }">
             <tr>
                 <td><c:out value="${ dettaglioFattura.descrizione }" /></td>
                 <c:choose>
@@ -65,7 +65,7 @@
                 
                 		</c:when>
 				<c:otherwise>
-                    <td>c:out value="${ dettaglioFattura.qta }" /> ore</td>
+                    <td><c:out value="${ dettaglioFattura.qta }" /> ore</td>
                     <td><c:out value="${ dettaglioFattura.tariffa }" /></td>
                     <td><c:out value="${ dettaglioFattura.tariffa / 8 * dettaglioFattura.qta }" /></td>
                </c:otherwise>

@@ -76,34 +76,29 @@
 				value="<c:out value="${fattura.numFattura}"/>" size="25"
 				maxlength="25" /> <br><span class="errore">${form.errore['numFattura']}</span>
             </td>
-            <td colspan="2" >
-				<label for="descrizioneFattura">Descrizione fattura <span class="obbligatorio">*</span></label>
-				<input type="text" id="descrizioneFattura" name="descrizioneFattura"
-				value="<c:out value="${fattura.descrizione}"/>" size="80"
-				maxlength="160" /> <br><span class="errore">${form.errore['descrizioneFattura']}</span>
-			</td>
-		</tr>
-		<tr>
+
             <td>        
             	<!-- inserisco datapicker -->
 
              	<fmt:parseDate pattern="yyyy-MM-dd" value="${fattura.dataFattura}" var="dataFattura" />
-             	<label for="date1">Data emissione <span class="obbligatorio">*</span></label>
-                <div class="input-group date noAcapo" id="date1" name="date1">                
+				     
+             	<div class="input-group date noAcapo" id="date1" name="date1">      
+             		<span class="label-group-addon-mb">Data emissione <span class="obbligatorio">*</span></span>    
                     <input type="text" class="form-control" id="dataFattura" name="dataFattura"
                     value="<fmt:formatDate value="${dataFattura}" pattern="dd/MM/yyyy" />" />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
+
                 <br><span class="errore">${form.errore['dataFattura']}</span>
 			</td>
 			<td>
 				<fmt:parseDate pattern="yyyy-MM-dd" value="${fattura.dataPagamento}" var="dataPagamento" />
-             	<label for="date2">Data pagamento </label>
+             	                	
                 <div class="input-group date noAcapo" id="date2" name="date2">  
-                    <input type="text" class="form-control" id="dataPagamento" name="dataPagamento"
-                    value="<fmt:formatDate value="${dataPagamento}" pattern="dd/MM/yyyy" />" /> 
+                <span class="label-group-addon-mb">Data pagamento </span>
+                    <input type="text" class="form-control" id="dataPagamento" name="dataPagamento" value="<fmt:formatDate value="${dataPagamento}" pattern="dd/MM/yyyy" />" /> 
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -113,10 +108,16 @@
 	<!--  fine inserimento -->
 
         </tr>
+        		<tr>
+            <td colspan="3" >
+				<label for="descrizioneFattura">Descrizione fattura <span class="obbligatorio">*</span></label>
+				<input type="text" id="descrizioneFattura" name="descrizioneFattura"
+				value="<c:out value="${fattura.descrizione}"/>" size="130"
+				maxlength="130" /> <br><span class="errore">${form.errore['descrizioneFattura']}</span>
+			</td>
+		</tr>
 
     </table>
-	
-
 	
 	
 		<fieldset>

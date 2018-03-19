@@ -28,10 +28,7 @@ public class FatturaDaoImpl implements FatturaDao {
         List<Fattura> fatture = new ArrayList<Fattura>();
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultat = null;
-
-        // Ricavo il numero del mese corrente
-        // int meseCorrente = LocalDate.now().getMonthValue();
+        ResultSet risultato = null;
 
         try {
             connexion = daoFactory.getConnection();
@@ -53,28 +50,28 @@ public class FatturaDaoImpl implements FatturaDao {
 
             preparedStatement = connexion.prepareStatement( sql );
             preparedStatement.setString( 1, anno );
-            resultat = preparedStatement.executeQuery();
+            risultato = preparedStatement.executeQuery();
 
-            while ( resultat.next() ) {
-                Integer id = resultat.getInt( "fattura_id" );
-                Integer numFattura = resultat.getInt( "fattura_num_fattura" );
-                String descrizione = resultat.getString( "descrizione" );
+            while ( risultato.next() ) {
+                Integer id = risultato.getInt( "fattura_id" );
+                Integer numFattura = risultato.getInt( "fattura_num_fattura" );
+                String descrizione = risultato.getString( "descrizione" );
 
-                String dataFatturaTemp = resultat.getString( "fattura_data_fattura" );
+                String dataFatturaTemp = risultato.getString( "fattura_data_fattura" );
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
                 LocalDate dataFattura = LocalDate.parse( dataFatturaTemp, formatter );
 
-                String dataPagamentoTemp = resultat.getString( "fattura_data_pagamento" );
+                String dataPagamentoTemp = risultato.getString( "fattura_data_pagamento" );
                 LocalDate dataPagamento = null;
                 if ( ( dataPagamentoTemp != null ) && ( !dataPagamentoTemp.equals( "" ) ) ) {
                     dataPagamento = LocalDate.parse( dataPagamentoTemp, formatter );
                 }
 
-                Float imponibile = resultat.getFloat( "fattura_imponibile" );
-                Float percentualeIVA = resultat.getFloat( "percentuale_IVA" );
-                Float iva = resultat.getFloat( "fattura_IVA" );
-                Float totFattura = resultat.getFloat( "fattura_tot_fattura" );
-                String noteFattura = resultat.getString( "fattura_note_fattura" );
+                Float imponibile = risultato.getFloat( "fattura_imponibile" );
+                Float percentualeIVA = risultato.getFloat( "percentuale_IVA" );
+                Float iva = risultato.getFloat( "fattura_IVA" );
+                Float totFattura = risultato.getFloat( "fattura_tot_fattura" );
+                String noteFattura = risultato.getString( "fattura_note_fattura" );
 
                 Fattura fattura = new Fattura();
                 fattura.setId( id );
@@ -89,15 +86,15 @@ public class FatturaDaoImpl implements FatturaDao {
                 fattura.setNoteFattura( noteFattura );
 
                 Ditta dittaTmp = new Ditta();
-                Integer id_ditta = resultat.getInt( "id_ditta1" );
-                String denominazione = resultat.getString( "denominazione1" );
-                String indirizzo = resultat.getString( "indirizzo1" );
-                Integer cap = resultat.getInt( "cap1" );
-                String citta = resultat.getString( "citta1" );
-                String cf = resultat.getString( "cf1" );
-                String piva = resultat.getString( "piva1" );
-                Boolean default_immissione = resultat.getBoolean( "default_immissione1" );
-                Timestamp dittaTimeStamp = resultat.getTimestamp( "ditta_time_stamp1" );
+                Integer id_ditta = risultato.getInt( "id_ditta1" );
+                String denominazione = risultato.getString( "denominazione1" );
+                String indirizzo = risultato.getString( "indirizzo1" );
+                Integer cap = risultato.getInt( "cap1" );
+                String citta = risultato.getString( "citta1" );
+                String cf = risultato.getString( "cf1" );
+                String piva = risultato.getString( "piva1" );
+                Boolean default_immissione = risultato.getBoolean( "default_immissione1" );
+                Timestamp dittaTimeStamp = risultato.getTimestamp( "ditta_time_stamp1" );
 
                 dittaTmp.setId_ditta( id_ditta );
                 dittaTmp.setDenominazione( denominazione );
@@ -112,15 +109,15 @@ public class FatturaDaoImpl implements FatturaDao {
                 fattura.setDitta1( dittaTmp );
 
                 Ditta dittaTmp2 = new Ditta();
-                Integer id_ditta2 = resultat.getInt( "id_ditta2" );
-                String denominazione2 = resultat.getString( "denominazione2" );
-                String indirizzo2 = resultat.getString( "indirizzo2" );
-                Integer cap2 = resultat.getInt( "cap2" );
-                String citta2 = resultat.getString( "citta2" );
-                String cf2 = resultat.getString( "cf2" );
-                String piva2 = resultat.getString( "piva2" );
-                Boolean default_immissione2 = resultat.getBoolean( "default_immissione2" );
-                Timestamp dittaTimeStamp2 = resultat.getTimestamp( "ditta_time_stamp2" );
+                Integer id_ditta2 = risultato.getInt( "id_ditta2" );
+                String denominazione2 = risultato.getString( "denominazione2" );
+                String indirizzo2 = risultato.getString( "indirizzo2" );
+                Integer cap2 = risultato.getInt( "cap2" );
+                String citta2 = risultato.getString( "citta2" );
+                String cf2 = risultato.getString( "cf2" );
+                String piva2 = risultato.getString( "piva2" );
+                Boolean default_immissione2 = risultato.getBoolean( "default_immissione2" );
+                Timestamp dittaTimeStamp2 = risultato.getTimestamp( "ditta_time_stamp2" );
 
                 dittaTmp2.setId_ditta( id_ditta2 );
                 dittaTmp2.setDenominazione( denominazione2 );
@@ -138,14 +135,14 @@ public class FatturaDaoImpl implements FatturaDao {
                 fatture.add( fattura );
             }
         } catch ( SQLException e ) {
-            throw new DaoException( "Impossible de communiquer avec la base de données" + e );
+            throw new DaoException( "Impossibile comunicare con la base dati " + e );
         } finally {
             try {
                 if ( connexion != null ) {
                     connexion.close();
                 }
             } catch ( SQLException e ) {
-                throw new DaoException( "Impossible de communiquer avec la base de données" );
+                throw new DaoException( "Impossibile comunicare con la base dati" );
             }
         }
         return fatture;
@@ -155,7 +152,7 @@ public class FatturaDaoImpl implements FatturaDao {
         List<String> anniSelezionabili = new ArrayList<String>();
         Connection connexion = null;
         statement = null;
-        ResultSet resultat = null;
+        ResultSet risultato = null;
 
         try {
 
@@ -164,23 +161,23 @@ public class FatturaDaoImpl implements FatturaDao {
 
             String sql = "select distinct YEAR(fattura_data_fattura) as annoSelezionabile from fattura order by fattura_data_fattura desc";
 
-            // Exécution de la requête
-            resultat = statement.executeQuery( sql );
+            // Esecuzione della richiesta
+            risultato = statement.executeQuery( sql );
 
-            // Récupération des données
-            while ( resultat.next() ) {
-                String annoSelezionabile = resultat.getString( "annoSelezionabile" );
+            // Recupero i dati
+            while ( risultato.next() ) {
+                String annoSelezionabile = risultato.getString( "annoSelezionabile" );
                 anniSelezionabili.add( annoSelezionabile );
             }
         } catch ( SQLException e ) {
-            throw new DaoException( "Impossible de communiquer avec la base de données" + e );
+            throw new DaoException( "Impossibile comunicare con la base dati " + e );
         } finally {
             try {
                 if ( connexion != null ) {
                     connexion.close();
                 }
             } catch ( SQLException e ) {
-                throw new DaoException( "Impossible de communiquer avec la base de données" );
+                throw new DaoException( "Impossibile comunicare con la base dati" );
             }
         }
         return anniSelezionabili;
@@ -190,7 +187,7 @@ public class FatturaDaoImpl implements FatturaDao {
         List<String> anniSelezionabili = new ArrayList<String>();
         Connection connexion = null;
         statement = null;
-        ResultSet resultat = null;
+        ResultSet risultato = null;
 
         try {
             connexion = daoFactory.getConnection();
@@ -199,34 +196,38 @@ public class FatturaDaoImpl implements FatturaDao {
             String sql = "select distinct YEAR(fattura_data_pagamento) as annoSelezionabile from fattura"
                     + " where fattura_data_pagamento IS NOT NULL order by annoSelezionabile desc";
 
-            // Exécution de la requête
-            resultat = statement.executeQuery( sql );
+            // Esecuzione della richiesta
+            risultato = statement.executeQuery( sql );
 
-            // Récupération des données
-            while ( resultat.next() ) {
-                String annoSelezionabile = resultat.getString( "annoSelezionabile" );
+            // Recupero i dati
+            while ( risultato.next() ) {
+                String annoSelezionabile = risultato.getString( "annoSelezionabile" );
                 anniSelezionabili.add( annoSelezionabile );
             }
         } catch ( SQLException e ) {
-            throw new DaoException( "Impossible de communiquer avec la base de données" + e );
+            throw new DaoException( "Impossibile comunicare con la base dati " + e );
         } finally {
             try {
                 if ( connexion != null ) {
                     connexion.close();
                 }
             } catch ( SQLException e ) {
-                throw new DaoException( "Impossible de communiquer avec la base de données" );
+                throw new DaoException( "Impossibile comunicare con la base dati" );
             }
         }
         return anniSelezionabili;
     }
 
     public Fattura find( Integer idFattura ) {
+        DettaglioFatturaDao dettaglioFatturaDao;
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        dettaglioFatturaDao = daoFactory.getDettaglioFatturaDao();
+
         Fattura fattura = new Fattura();
 
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultat = null;
+        ResultSet risultato = null;
 
         try {
             connexion = daoFactory.getConnection();
@@ -241,29 +242,29 @@ public class FatturaDaoImpl implements FatturaDao {
 
             preparedStatement = connexion.prepareStatement( sql );
             preparedStatement.setInt( 1, idFattura );
-            resultat = preparedStatement.executeQuery();
-            resultat.beforeFirst();
-            if ( resultat.next() ) {
+            risultato = preparedStatement.executeQuery();
+            risultato.beforeFirst();
+            if ( risultato.next() ) {
 
-                Integer id = resultat.getInt( "fattura_id" );
-                Integer numFattura = resultat.getInt( "fattura_num_fattura" );
-                String descrizione = resultat.getString( "descrizione" );
+                Integer id = risultato.getInt( "fattura_id" );
+                Integer numFattura = risultato.getInt( "fattura_num_fattura" );
+                String descrizione = risultato.getString( "descrizione" );
 
-                String dataFatturaTemp = resultat.getString( "fattura_data_fattura" );
+                String dataFatturaTemp = risultato.getString( "fattura_data_fattura" );
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
                 LocalDate dataFattura = LocalDate.parse( dataFatturaTemp, formatter );
 
-                String dataPagamentoTemp = resultat.getString( "fattura_data_pagamento" );
+                String dataPagamentoTemp = risultato.getString( "fattura_data_pagamento" );
                 LocalDate dataPagamento = null;
                 if ( ( dataPagamentoTemp != null ) && ( !dataPagamentoTemp.equals( "" ) ) ) {
                     dataPagamento = LocalDate.parse( dataPagamentoTemp, formatter );
                 }
 
-                Float imponibile = resultat.getFloat( "fattura_imponibile" );
-                Float percentualeIVA = resultat.getFloat( "percentuale_IVA" );
-                Float iva = resultat.getFloat( "fattura_IVA" );
-                Float totFattura = resultat.getFloat( "fattura_tot_fattura" );
-                String noteFattura = resultat.getString( "fattura_note_fattura" );
+                Float imponibile = risultato.getFloat( "fattura_imponibile" );
+                Float percentualeIVA = risultato.getFloat( "percentuale_IVA" );
+                Float iva = risultato.getFloat( "fattura_IVA" );
+                Float totFattura = risultato.getFloat( "fattura_tot_fattura" );
+                String noteFattura = risultato.getString( "fattura_note_fattura" );
 
                 fattura.setId( id );
                 fattura.setNumFattura( numFattura );
@@ -277,15 +278,15 @@ public class FatturaDaoImpl implements FatturaDao {
                 fattura.setNoteFattura( noteFattura );
 
                 Ditta dittaTmp = new Ditta();
-                Integer id_ditta = resultat.getInt( "id_ditta1" );
-                String denominazione = resultat.getString( "denominazione1" );
-                String indirizzo = resultat.getString( "indirizzo1" );
-                Integer cap = resultat.getInt( "cap1" );
-                String citta = resultat.getString( "citta1" );
-                String cf = resultat.getString( "cf1" );
-                String piva = resultat.getString( "piva1" );
-                Boolean default_immissione = resultat.getBoolean( "default_immissione1" );
-                Timestamp dittaTimeStamp = resultat.getTimestamp( "ditta_time_stamp1" );
+                Integer id_ditta = risultato.getInt( "id_ditta1" );
+                String denominazione = risultato.getString( "denominazione1" );
+                String indirizzo = risultato.getString( "indirizzo1" );
+                Integer cap = risultato.getInt( "cap1" );
+                String citta = risultato.getString( "citta1" );
+                String cf = risultato.getString( "cf1" );
+                String piva = risultato.getString( "piva1" );
+                Boolean default_immissione = risultato.getBoolean( "default_immissione1" );
+                Timestamp dittaTimeStamp = risultato.getTimestamp( "ditta_time_stamp1" );
 
                 dittaTmp.setId_ditta( id_ditta );
                 dittaTmp.setDenominazione( denominazione );
@@ -300,15 +301,15 @@ public class FatturaDaoImpl implements FatturaDao {
                 fattura.setDitta1( dittaTmp );
 
                 Ditta dittaTmp2 = new Ditta();
-                Integer id_ditta2 = resultat.getInt( "id_ditta2" );
-                String denominazione2 = resultat.getString( "denominazione2" );
-                String indirizzo2 = resultat.getString( "indirizzo2" );
-                Integer cap2 = resultat.getInt( "cap2" );
-                String citta2 = resultat.getString( "citta2" );
-                String cf2 = resultat.getString( "cf2" );
-                String piva2 = resultat.getString( "piva2" );
-                Boolean default_immissione2 = resultat.getBoolean( "default_immissione2" );
-                Timestamp dittaTimeStamp2 = resultat.getTimestamp( "ditta_time_stamp2" );
+                Integer id_ditta2 = risultato.getInt( "id_ditta2" );
+                String denominazione2 = risultato.getString( "denominazione2" );
+                String indirizzo2 = risultato.getString( "indirizzo2" );
+                Integer cap2 = risultato.getInt( "cap2" );
+                String citta2 = risultato.getString( "citta2" );
+                String cf2 = risultato.getString( "cf2" );
+                String piva2 = risultato.getString( "piva2" );
+                Boolean default_immissione2 = risultato.getBoolean( "default_immissione2" );
+                Timestamp dittaTimeStamp2 = risultato.getTimestamp( "ditta_time_stamp2" );
 
                 dittaTmp2.setId_ditta( id_ditta2 );
                 dittaTmp2.setDenominazione( denominazione2 );
@@ -324,16 +325,19 @@ public class FatturaDaoImpl implements FatturaDao {
                 fattura.setDitta2( dittaTmp2 );
             }
         } catch ( SQLException e ) {
-            throw new DaoException( "Impossible de communiquer avec la base de données" + e );
+            throw new DaoException( "Impossibile comunicare con la base dati " + e );
         } finally {
             try {
                 if ( connexion != null ) {
                     connexion.close();
                 }
             } catch ( SQLException e ) {
-                throw new DaoException( "Impossible de communiquer avec la base de données" );
+                throw new DaoException( "Impossibile comunicare con la base dati" );
             }
         }
+
+        // ricavo i dettagli della fattura
+        fattura.setDettagliFattura( dettaglioFatturaDao.findAllByFattura( idFattura ) );
 
         return fattura;
     }
@@ -347,7 +351,7 @@ public class FatturaDaoImpl implements FatturaDao {
         Integer numeroProssimaFattura = 1;
 
         Connection connexion = null;
-        ResultSet resultat = null;
+        ResultSet risultato = null;
 
         // Imposto la data del giorno
         fattura.setDataFattura( LocalDate.now() );
@@ -361,22 +365,23 @@ public class FatturaDaoImpl implements FatturaDao {
             String sql = "select MAX(fattura_num_fattura) as num_fattura from fattura WHERE YEAR(fattura_data_fattura) = '"
                     + LocalDate.now().getYear() + "'";
 
-            // Exécution de la requête
-            resultat = statement.executeQuery( sql );
-            resultat.beforeFirst();
-            // Récupération des données
-            if ( resultat.next() ) {
-                numeroProssimaFattura = resultat.getInt( "num_fattura" ) + 1;
+            // Esecuzione della richiesta
+            risultato = statement.executeQuery( sql );
+            risultato.beforeFirst();
+
+            // Recupero i dati
+            if ( risultato.next() ) {
+                numeroProssimaFattura = risultato.getInt( "num_fattura" ) + 1;
             }
         } catch ( SQLException e ) {
-            throw new DaoException( "Impossible de communiquer avec la base de données" + e );
+            throw new DaoException( "Impossibile comunicare con la base dati " + e );
         } finally {
             try {
                 if ( connexion != null ) {
                     connexion.close();
                 }
             } catch ( SQLException e ) {
-                throw new DaoException( "Impossible de communiquer avec la base de données" );
+                throw new DaoException( "Impossibile comunicare con la base dati " );
             }
         }
 

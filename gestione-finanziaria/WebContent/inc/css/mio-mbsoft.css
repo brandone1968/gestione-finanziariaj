@@ -75,3 +75,20 @@ div#footer{
 .obbligatorio {
 	color: #8000ff;
 }
+
+/* stile utilizzato per aggiungere una label ai calendari */
+/* deriva da  input-group-addon del lavish-bootstrap */
+.label-group-addon-mb {
+	padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+	font-weight: bold;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    display: table-cell;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.42857;
+    color: #4C366C;
+} 
