@@ -1,7 +1,7 @@
  <%@ page pageEncoding="UTF-8" %>
         <div id="footer" class="panel-footer">
             Copyright © 2018 - MBSoft Sas. Tutti i diritti riservati. P.IVA 11054670010
-            <a href="https://github.com/brandone1968/gestione-finanziaria"> - Gestione Finanziaria</a> è sviluppato in Java.
+            <a href="https://github.com/brandone1968/gestione-finanziariaj"> - Gestione Finanziaria</a> è sviluppato in Java.
         </div>
 
         <script type="text/javascript" src="inc/lib/jquery/jquery-3.3.1.min.js"></script> 

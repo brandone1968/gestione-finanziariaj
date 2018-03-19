@@ -197,7 +197,7 @@ public class FatturaDaoImpl implements FatturaDao {
             statement = connexion.createStatement();
 
             String sql = "select distinct YEAR(fattura_data_pagamento) as annoSelezionabile from fattura"
-                    + " where fattura_data_pagamento IS NOT NULL order by fattura_data_pagamento desc";
+                    + " where fattura_data_pagamento IS NOT NULL order by annoSelezionabile desc";
 
             // Exécution de la requête
             resultat = statement.executeQuery( sql );
