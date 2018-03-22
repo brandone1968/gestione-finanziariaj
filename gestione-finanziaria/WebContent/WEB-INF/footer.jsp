@@ -50,6 +50,44 @@
               	  $.post('AjaxDatiDitta',{idDitta:ditta1},function(responceText) {
               			$('#descrizioneDitta2').html(responceText);  
               	  });                	                  	  
-              });
+                });
+                
+                // Se cambia una qualunque casella economica del dettaglio - classe conteggi
+                $(".conteggi").on('change keyup paste', function () {
+                	
+                	var numeroLoop = $('.conteggi').length / 3;
+                	
+                	var imponibile =0;
+                	var iva = 22;
+                	var totaleFattura;
+                	for (var i = 1; i <= numeroLoop; i++) {
+                    	var qta = $("#qta_"+i).val();
+                    	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
+                    	var importo = $("#importo_"+i).val();
+                    	var risultato;
+                    	if (unitaMisuraQta==0){
+                    		risultato = qta * importo;
+                    	}else{
+                    		risultato = qta * importo / 8;
+                    	}
+//                     	$("#totaleDettaglio").text(qta);
+                    	$("#totaleDettaglio_"+i).html("<b>" + risultato + "</b>");
+                    	imponibile = imponibile + risultato;
+                    	totaleFattura = imponibile + (imponibile * iva / 100);
+                	}
+                	$("#imponibile").html("<b>" + imponibile + "</b>");
+                	$("#iva").html("<b>" + iva + "</b>");
+                	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
+
+                });
+                
+                // Aggiunge dettaglio
+                $("#bottoneAggiungiDettaglio").click(function(){
+                	alert("aggiungi dettaglio");
+                	var numeroDettagli = $('.conteggi').length / 3;
+                	$('#tableDettagli').append("<tr><td><input type='text' id='descrizioneDettaglio_'" + numeroDettagli + " name='descrizioneDettaglio_3' value='' size='60' maxlength='60' /> <br></td><td>more data</td></tr>");
+                });
+                
+                
             });
         </script>

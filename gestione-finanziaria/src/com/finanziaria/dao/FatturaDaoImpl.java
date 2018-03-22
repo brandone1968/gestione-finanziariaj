@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.finanziaria.beans.DettaglioFattura;
 import com.finanziaria.beans.Ditta;
 import com.finanziaria.beans.Fattura;
 
@@ -386,6 +387,13 @@ public class FatturaDaoImpl implements FatturaDao {
         }
 
         fattura.setNumFattura( numeroProssimaFattura );
+
+        // imposto almeno un dettaglio
+        DettaglioFattura dettaglio = new DettaglioFattura();
+        dettaglio.setId( 1 );
+        List<DettaglioFattura> dettagli = new ArrayList<DettaglioFattura>();
+        dettagli.add( dettaglio );
+        fattura.setDettagliFattura( dettagli );
         return fattura;
     }
 }

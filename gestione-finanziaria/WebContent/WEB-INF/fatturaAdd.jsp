@@ -104,21 +104,113 @@
                     </span>
                 </div>
                 <br><span class="errore">${form.errore['dataPagamento']}</span>
-             </td>
-	<!--  fine inserimento -->
+            </td>
+	            <!--  fine inserimento -->
 
         </tr>
-        		<tr>
-            <td colspan="3" >
-				<label for="descrizioneFattura">Descrizione fattura <span class="obbligatorio">*</span></label>
-				<input type="text" id="descrizioneFattura" name="descrizioneFattura"
-				value="<c:out value="${fattura.descrizione}"/>" size="130"
-				maxlength="130" /> <br><span class="errore">${form.errore['descrizioneFattura']}</span>
+        
+    </table> 
+        
+    <table id="tableDettagli" class="table table-bordered table-hover">
+    	<tr>
+            <td><label>Descrizione</label></td>
+            <td><label>Quantità</label></td>
+            <td><label>gg/h</label></td>
+            <td><label>Importo</label></td>
+            <td><label>Totale</label></td>
+        </tr>
+
+        <c:forEach var="dettaglio" items="${ fattura.dettagliFattura }" varStatus="indiceDettaglio">	
+        <tr>
+            <td>
+				<input type="text" id="descrizioneDettaglio_${ indiceDettaglio.index +1}" name="descrizioneDettaglio_${ indiceDettaglio.index +1}"
+				value="<c:out value="${dettaglio.descrizione}"/>" size="60"
+				maxlength="60" /> <br>
+			</td>
+			<td>
+				<input type="text" id="qta_${ indiceDettaglio.index +1}" name="qta_${ indiceDettaglio.index +1}" class="conteggi"
+				value="<c:out value="${dettaglio.qta}"/>" size="3"
+				maxlength="3" /> <br>
+			</td>
+			<td>
+				<select id="unitaMisuraQta_${ indiceDettaglio.index +1}" name="unitaMisuraQta_${ indiceDettaglio.index +1}" class="conteggi">
+					<option value="0">Giorni</option>
+					<option value="1">Ore</option>
+				</select>
+			</td>
+			<td>
+				<input type="text" id="importo_${ indiceDettaglio.index +1}" name="importo_${ indiceDettaglio.index +1}" class="conteggi"
+				value="<c:out value="${dettaglio.tariffa}"/>" size="6"
+				maxlength="6" /> <br>
+			</td>
+			<td>
+				<span id="totaleDettaglio_${ indiceDettaglio.index +1}" name="totaleDettaglio_${ indiceDettaglio.index +1}"></span>
+			</td>
+		</tr>
+		</c:forEach>
+		
+<!-- 		inserimento per prova jquery - da togliere -->
+		 <tr>
+            <td>
+				<input type="text" id="descrizioneDettaglio_2" name="descrizioneDettaglio_2"
+				value="" size="60"
+				maxlength="60" /> <br>
+			</td>
+			<td>
+				<input type="text" id="qta_2" name="qta_2" class="conteggi"
+				value="" size="3"
+				maxlength="3" /> <br>
+			</td>
+			<td>
+				<select id="unitaMisuraQta_2" name="unitaMisuraQta_2" class="conteggi">
+					<option value="0">Giorni</option>
+					<option value="1">Ore</option>
+				</select>
+			</td>
+			<td>
+				<input type="text" id="importo_2" name="importo_2" class="conteggi"
+				value="" size="6"
+				maxlength="6" /> <br>
+			</td>
+			<td>
+				<span id="totaleDettaglio_2" name="totaleDettaglio_2"></span>
+			</td>
+		</tr>
+		
+		
+<!-- 		inserimento per prova jquery - da togliere - fine -->		
+		
+		<tr>
+			<td>
+				<button type="button" id="bottoneAggiungiDettaglio">Aggiungi dettaglio</button>
+			</td>
+			<td colspan='4'></td>
+		</tr>
+    </table>
+	
+	
+     <table id="tableFattura" class="table table-bordered table-hover">
+    	<tr>
+            <td><label>Imponibile</label></td>
+            <td><label>Iva</label></td>
+            <td><label>Totale Fattura</label></td>
+        </tr>
+        
+         <tr>
+ 			<td>
+				<span id="imponibile" name="imponibile"></span>
+			</td>
+			<td>
+				<span id="iva" name="iva"></span>
+			</td>
+			<td>
+				<span id="totaleFattura" name="totaleFattura"></span>
 			</td>
 		</tr>
 
+		
     </table>
-	
+            
 	
 		<fieldset>
 
