@@ -16,6 +16,11 @@
         
         <script type="text/javascript">
             $(document).ready(function (ev1) {
+//             	alert($('.conteggi').length);
+//             	if($('.conteggi').length == 3) {
+//             		$('#bottoneEliminaDettaglio').hide();
+//             	}
+            
                 $('#tableData').paging({limit: 12});
                 
                 $('#date1').datepicker({
@@ -53,10 +58,16 @@
                 });
                 
                 // Se cambia una qualunque casella economica del dettaglio - classe conteggi
-                $(".conteggi").on('change keyup paste', function () {
+                // Utilizzare eventi delegati invece di quelli diretti, altrimenti l'evento non sarà abilitato sulle righe aggiunte
+                // --------------------------------------------------------------------------------------------------------------------------
+                // $(".conteggi").on('change keyup paste', function () {   <-- evento diretto
+            	// $(document).on ("change keyup paste", ".conteggi", function () { <-- evento delegato 
+            	// Nel secondo caso la rilevazione dell'evento viene delegata a document che controllerà tutti i figli
+            	// per motivi di performance è meglio delegare il cotrollo ad un padre più vicino, in questo caso la tabella tableDettagli
+            	// --------------------------------------------------------------------------------------------------------------------------
+            	$('table#tableDettagli').on ("change keyup paste", ".conteggi", function () {
                 	
                 	var numeroLoop = $('.conteggi').length / 3;
-                	
                 	var imponibile =0;
                 	var iva = 22;
                 	var totaleFattura;
@@ -83,11 +94,69 @@
                 
                 // Aggiunge dettaglio
                 $("#bottoneAggiungiDettaglio").click(function(){
-                	alert("aggiungi dettaglio");
                 	var numeroDettagli = $('.conteggi').length / 3;
-                	$('#tableDettagli').append("<tr><td><input type='text' id='descrizioneDettaglio_'" + numeroDettagli + " name='descrizioneDettaglio_3' value='' size='60' maxlength='60' /> <br></td><td>more data</td></tr>");
+                	numeroDettagli++;
+                	if (numeroDettagli>1) {
+                	    $('#bottoneEliminaDettaglio').show();
+                	} else {
+                		$('#bottoneEliminaDettaglio').hide();
+                	}
+					
+                	if (numeroDettagli>4) {
+                		$('#bottoneAggiungiDettaglio').hide();
+                	} else {
+                		$('#bottoneAggiungiDettaglio').show();
+                	}
+                	
+//                 	$('#tableDettagli').append("<tr><td><input type='text' id='descrizioneDettaglio_'" + numeroDettagli + " name='descrizioneDettaglio_3' value='' size='60' maxlength='60' /> <br></td><td>more data</td></tr>");
+                	$('.dettaglioFattura').last().after("<tr class='dettaglioFattura'>" + 
+                			"<td><input type='text' id='descrizioneDettaglio_" + numeroDettagli + "' name='descrizioneDettaglio_" + numeroDettagli + "' value='' size='60' maxlength='60' /> <br></td>" +
+                			"<td><input type='text' id='qta_" + numeroDettagli + "' name='qta_" + numeroDettagli + "' value='' size='3' maxlength='3' class='conteggi' /> <br></td>" +
+                			"<td><select id='unitaMisuraQta_" + numeroDettagli + "' name='unitaMisuraQta_" + numeroDettagli + "' class='conteggi'><option value='0'>Giorni</option><option value='1'>Ore</option></td>" +
+                			"<td><input type='text' id='importo_" + numeroDettagli + "' name='importo_" + numeroDettagli + "' value='' size='6' maxlength='6' class='conteggi' /> <br></td>" +
+                			"<td><span id='totaleDettaglio_" + numeroDettagli + "' name='totaleDettaglio_" + numeroDettagli + "' value='' </span><br></td>");
                 });
                 
+                
+                $("#bottoneEliminaDettaglio").click(function(){
+                	$('.dettaglioFattura').last().remove();
+                	
+                	var numeroLoop = $('.conteggi').length / 3;
+                	if (numeroLoop<2) {                		
+                	    $('#bottoneEliminaDettaglio').hide();
+                	} else {
+                		$('#bottoneEliminaDettaglio').show();
+                	}
+                	if (numeroLoop<5) {
+                		$('#bottoneAggiungiDettaglio').show();
+                	} else {
+                		$('#bottoneAggiungiDettaglio').hide();
+                	}
+                	
+                	
+                	var imponibile =0;
+                	var iva = 22;
+                	var totaleFattura;
+                	for (var i = 1; i <= numeroLoop; i++) {
+                    	var qta = $("#qta_"+i).val();
+                    	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
+                    	var importo = $("#importo_"+i).val();
+                    	var risultato;
+                    	if (unitaMisuraQta==0){
+                    		risultato = qta * importo;
+                    	}else{
+                    		risultato = qta * importo / 8;
+                    	}
+//                     	$("#totaleDettaglio").text(qta);
+                    	$("#totaleDettaglio_"+i).html("<b>" + risultato + "</b>");
+                    	imponibile = imponibile + risultato;
+                    	totaleFattura = imponibile + (imponibile * iva / 100);
+                	}
+                	$("#imponibile").html("<b>" + imponibile + "</b>");
+                	$("#iva").html("<b>" + iva + "</b>");
+                	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
+                	
+                });
                 
             });
         </script>
