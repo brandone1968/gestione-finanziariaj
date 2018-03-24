@@ -2,40 +2,38 @@ package com.finanziaria.forms;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.finanziaria.beans.DettaglioFattura;
 import com.finanziaria.beans.Fattura;
 import com.finanziaria.dao.DaoFactory;
 import com.finanziaria.dao.FatturaDao;
 
 public class FatturaForm {
-    private static final String CAMPO_NUM_FATTURA       = "numFattura";
-    private static final String CAMPO_DESCRIZIONE       = "descrizioneFattura";
-    private static final String CAMPO_DATA_FATTURA      = "dataFattura";
-    private static final String CAMPO_DATA_PAGAMENTO    = "dataPagamento";
-    private static final String CAMPO_DITTA1            = "ditta1";
-    private static final String CAMPO_DITTA2            = "ditta2";
+    private static final String CAMPO_NUM_FATTURA           = "numFattura";
+    private static final String CAMPO_DESCRIZIONE           = "descrizioneFattura";
+    private static final String CAMPO_DATA_FATTURA          = "dataFattura";
+    private static final String CAMPO_DATA_PAGAMENTO        = "dataPagamento";
+    private static final String CAMPO_DITTA1                = "ditta1";
+    private static final String CAMPO_DITTA2                = "ditta2";
+    private static final String CAMPO_DESCRIZIONE_DETTAGLIO = "descrizioneDettaglio_";
+    private static final String CAMPO_QTA                   = "qta_";
+    private static final String CAMPO_UNITA_MISURA_QTA      = "unitaMisuraQta_";
+    private static final String CAMPO_TARIFFA               = "importo_";
+    private static final String CAMPO_NUM_DETTAGLI          = "numDettagli";
     // Imposto formattazione data giorno/mese/anno
-    private static final String FORMATO_DATA            = "dd/MM/yyyy";
+    private static final String FORMATO_DATA                = "dd/MM/yyyy";
 
     private String              risultato;
-    private Map<String, String> errore                  = new HashMap<String, String>();
+    private Map<String, String> errore                      = new HashMap<String, String>();
     private FatturaDao          fatturaDao;
 
-    private String              descrizioneFatturaProva = "";
-    // ditta 1
-    // ditta 2
-    // data emissione
-    // data pagamento
-
-    // dettaglio
-    // descrizioneDettaglio
-    // qta
-    // unitaMisuraQta
-    // tariffa
+    private String              descrizioneFatturaProva     = "";
 
     public String getRisultato() {
         return risultato;
@@ -52,8 +50,35 @@ public class FatturaForm {
         String dataPagamento = getValoreCampo( request, CAMPO_DATA_PAGAMENTO );
         String ditta1 = getValoreCampo( request, CAMPO_DITTA1 );
         String ditta2 = getValoreCampo( request, CAMPO_DITTA2 );
+        Integer numDettagli = Integer.parseInt( getValoreCampo( request, CAMPO_NUM_DETTAGLI ) );
 
         Fattura fattura = new Fattura();
+
+        List<DettaglioFattura> dettagliFattura = new ArrayList<DettaglioFattura>();
+
+        String descrizioneDettaglio = "";
+        String qta = "";
+        String unitaMisuraQta = "";
+        String importo = "";
+
+        // ciclo per controllare tutti i campi di dettaglio e ricomporre l'array
+        // di oggetti dettaglio
+        for ( int j = 1; j <= numDettagli; j++ ) {
+            descrizioneDettaglio = getValoreCampo( request, CAMPO_DESCRIZIONE_DETTAGLIO + j );
+            qta = getValoreCampo( request, CAMPO_QTA + j );
+            unitaMisuraQta = getValoreCampo( request, CAMPO_UNITA_MISURA_QTA + j );
+            importo = getValoreCampo( request, CAMPO_TARIFFA + j );
+            DettaglioFattura dettaglioFattura = new DettaglioFattura();
+            dettaglioFattura.setId( j );
+            dettaglioFattura.setDescrizione( descrizioneDettaglio );
+            dettaglioFattura.setQta( Integer.parseInt( qta ) );
+            dettaglioFattura.setUnitaMisuraQta( Integer.parseInt( unitaMisuraQta ) );
+            dettaglioFattura.setTariffa( Float.parseFloat( importo ) );
+
+            dettagliFattura.add( dettaglioFattura );
+        }
+
+        fattura.setDettagliFattura( dettagliFattura );
 
         try {
             validationNumFattura( numFattura );

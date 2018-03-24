@@ -16,10 +16,42 @@
         
         <script type="text/javascript">
             $(document).ready(function (ev1) {
-//             	alert($('.conteggi').length);
-//             	if($('.conteggi').length == 3) {
-//             		$('#bottoneEliminaDettaglio').hide();
-//             	}
+            	
+            	var numeroLoop = $('.conteggi').length / 3;
+            	$('#numDettagli').val(numeroLoop);
+            	if (numeroLoop>1) {
+            	    $('#bottoneEliminaDettaglio').show();
+            	} else {
+            		$('#bottoneEliminaDettaglio').hide();
+            	}
+				
+            	if (numeroLoop>4) {
+            		$('#bottoneAggiungiDettaglio').hide();
+            	} else {
+            		$('#bottoneAggiungiDettaglio').show();
+            	}
+            	var imponibile =0;
+            	var iva = 22;
+            	var totaleFattura;
+            	for (var i = 1; i <= numeroLoop; i++) {
+                	var qta = $("#qta_"+i).val();
+                	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
+                	var importo = $("#importo_"+i).val();
+                	var risultato;
+                	if (unitaMisuraQta==0){
+                		risultato = qta * importo;
+                	}else{
+                		risultato = qta * importo / 8;
+                	}
+//                 	$("#totaleDettaglio").text(qta);
+                	$("#totaleDettaglio_"+i).html("<b>" + risultato + "</b>");
+                	imponibile = imponibile + risultato;
+                	totaleFattura = imponibile + (imponibile * iva / 100);
+            	}
+            	
+            	$("#imponibile").html("<b>" + imponibile + "</b>");
+            	$("#iva").html("<b>" + iva + "</b>");
+            	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
             
                 $('#tableData').paging({limit: 12});
                 
@@ -96,6 +128,7 @@
                 $("#bottoneAggiungiDettaglio").click(function(){
                 	var numeroDettagli = $('.conteggi').length / 3;
                 	numeroDettagli++;
+                	$('#numDettagli').val(numeroDettagli);
                 	if (numeroDettagli>1) {
                 	    $('#bottoneEliminaDettaglio').show();
                 	} else {
@@ -117,11 +150,12 @@
                 			"<td><span id='totaleDettaglio_" + numeroDettagli + "' name='totaleDettaglio_" + numeroDettagli + "' value='' </span><br></td>");
                 });
                 
-                
+                // Elimina dettaglio
                 $("#bottoneEliminaDettaglio").click(function(){
                 	$('.dettaglioFattura').last().remove();
                 	
                 	var numeroLoop = $('.conteggi').length / 3;
+                	$('#numDettagli').val(numeroLoop);
                 	if (numeroLoop<2) {                		
                 	    $('#bottoneEliminaDettaglio').hide();
                 	} else {

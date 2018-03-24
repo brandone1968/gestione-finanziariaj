@@ -123,8 +123,8 @@
             <td><label>Descrizione</label></td>
             <td><label>Quantità</label></td>
             <td><label>gg/h</label></td>
-            <td><label>Importo</label></td>
-            <td><label>Totale</label></td>
+            <td><label>Importo €</label></td>
+            <td><label>Totale €</label></td>
         </tr>
 
         <c:forEach var="dettaglio" items="${ fattura.dettagliFattura }" varStatus="indiceDettaglio">	
@@ -169,9 +169,9 @@
 	
      <table id="tableFattura" class="table table-bordered table-hover">
     	<tr>
-            <td><label>Imponibile</label></td>
-            <td><label>Iva</label></td>
-            <td><label>Totale Fattura</label></td>
+            <td><label>Imponibile €</label></td>
+            <td><label>% Iva</label></td>
+            <td><label>Totale Fattura €</label></td>
         </tr>
         
          <tr>
@@ -188,7 +188,8 @@
 
 		
     </table>
-            
+
+	<input type="hidden" id="numDettagli" name="numDettagli" />            
 
 		<fieldset>
 			<br /> 
