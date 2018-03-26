@@ -65,15 +65,30 @@ public class FatturaForm {
         // di oggetti dettaglio
         for ( int j = 1; j <= numDettagli; j++ ) {
             descrizioneDettaglio = getValoreCampo( request, CAMPO_DESCRIZIONE_DETTAGLIO + j );
+
             qta = getValoreCampo( request, CAMPO_QTA + j );
             unitaMisuraQta = getValoreCampo( request, CAMPO_UNITA_MISURA_QTA + j );
             importo = getValoreCampo( request, CAMPO_TARIFFA + j );
+
             DettaglioFattura dettaglioFattura = new DettaglioFattura();
             dettaglioFattura.setId( j );
             dettaglioFattura.setDescrizione( descrizioneDettaglio );
-            dettaglioFattura.setQta( Integer.parseInt( qta ) );
+
+            try {
+                validationQta( qta );
+                dettaglioFattura.setQta( Integer.parseInt( qta ) );
+            } catch ( Exception e ) {
+                setErrore( CAMPO_QTA + j, e.getMessage() );
+            }
+
             dettaglioFattura.setUnitaMisuraQta( Integer.parseInt( unitaMisuraQta ) );
-            dettaglioFattura.setTariffa( Float.parseFloat( importo ) );
+
+            try {
+                validationTariffa( importo );
+                dettaglioFattura.setTariffa( Float.parseFloat( importo ) );
+            } catch ( Exception e ) {
+                setErrore( CAMPO_TARIFFA + j, e.getMessage() );
+            }
 
             dettagliFattura.add( dettaglioFattura );
         }
@@ -172,6 +187,18 @@ public class FatturaForm {
         }
     }
 
+    private void validationQta( String qta ) throws Exception {
+        if ( !isNumeric( qta ) ) {
+            throw new Exception( "Per cortesia, inserire una quantità valida" );
+        }
+    }
+
+    private void validationTariffa( String importo ) throws Exception {
+        if ( !isNumeric( importo ) ) {
+            throw new Exception( "Per cortesia, inserire un importo valido" );
+        }
+    }
+
     /*
      * Aggiungo un messaggio corrispondente al campo specificato nella mappa
      * errori.
@@ -204,5 +231,12 @@ public class FatturaForm {
         } catch ( Exception e ) {
             return false;
         }
+    }
+
+    /*
+     * Metodo che verifica che una stringa sia un numero
+     */
+    public static boolean isNumeric( String inputData ) {
+        return inputData.matches( "[+]?\\d+(\\.\\d+)?" );
     }
 }

@@ -137,7 +137,8 @@
 			<td>
 				<input type="text" id="qta_${ indiceDettaglio.index +1}" name="qta_${ indiceDettaglio.index +1}" class="conteggi"
 				value="<c:out value="${dettaglio.qta}"/>" size="3"
-				maxlength="3" /> <br>
+				<c:set var = "qtaTmp" value = "qta_${ indiceDettaglio.index +1}"/>
+				maxlength="3" /> <br><span class="errore">${form.errore[qtaTmp]}</span>
 			</td>
 			<td>
 				<select id="unitaMisuraQta_${ indiceDettaglio.index +1}" name="unitaMisuraQta_${ indiceDettaglio.index +1}" class="conteggi">
@@ -148,7 +149,8 @@
 			<td>
 				<input type="text" id="importo_${ indiceDettaglio.index +1}" name="importo_${ indiceDettaglio.index +1}" class="conteggi"
 				value="<c:out value="${dettaglio.tariffa}"/>" size="6"
-				maxlength="6" /> <br>
+				<c:set var = "importoTmp" value = "importo_${ indiceDettaglio.index +1}"/>
+				maxlength="6" /> <br><span class="errore">${form.errore[importoTmp]}</span>
 			</td>
 			<td>
 				<span id="totaleDettaglio_${ indiceDettaglio.index +1}" name="totaleDettaglio_${ indiceDettaglio.index +1}"></span>

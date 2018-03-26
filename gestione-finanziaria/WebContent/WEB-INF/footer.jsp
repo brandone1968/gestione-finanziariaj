@@ -30,29 +30,9 @@
             	} else {
             		$('#bottoneAggiungiDettaglio').show();
             	}
-            	var imponibile =0;
-            	var iva = 22;
-            	var totaleFattura;
-            	for (var i = 1; i <= numeroLoop; i++) {
-                	var qta = $("#qta_"+i).val();
-                	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
-                	var importo = $("#importo_"+i).val();
-                	var risultato;
-                	if (unitaMisuraQta==0){
-                		risultato = qta * importo;
-                	}else{
-                		risultato = qta * importo / 8;
-                	}
-//                 	$("#totaleDettaglio").text(qta);
-                	$("#totaleDettaglio_"+i).html("<b>" + risultato + "</b>");
-                	imponibile = imponibile + risultato;
-                	totaleFattura = imponibile + (imponibile * iva / 100);
-            	}
             	
-            	$("#imponibile").html("<b>" + imponibile + "</b>");
-            	$("#iva").html("<b>" + iva + "</b>");
-            	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
-            
+            	aggiornaConteggi();
+            	
                 $('#tableData').paging({limit: 12});
                 
                 $('#date1').datepicker({
@@ -98,30 +78,7 @@
             	// per motivi di performance è meglio delegare il cotrollo ad un padre più vicino, in questo caso la tabella tableDettagli
             	// --------------------------------------------------------------------------------------------------------------------------
             	$('table#tableDettagli').on ("change keyup paste", ".conteggi", function () {
-                	
-                	var numeroLoop = $('.conteggi').length / 3;
-                	var imponibile =0;
-                	var iva = 22;
-                	var totaleFattura;
-                	for (var i = 1; i <= numeroLoop; i++) {
-                    	var qta = $("#qta_"+i).val();
-                    	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
-                    	var importo = $("#importo_"+i).val();
-                    	var risultato;
-                    	if (unitaMisuraQta==0){
-                    		risultato = qta * importo;
-                    	}else{
-                    		risultato = qta * importo / 8;
-                    	}
-//                     	$("#totaleDettaglio").text(qta);
-                    	$("#totaleDettaglio_"+i).html("<b>" + risultato + "</b>");
-                    	imponibile = imponibile + risultato;
-                    	totaleFattura = imponibile + (imponibile * iva / 100);
-                	}
-                	$("#imponibile").html("<b>" + imponibile + "</b>");
-                	$("#iva").html("<b>" + iva + "</b>");
-                	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
-
+            		aggiornaConteggi();
                 });
                 
                 // Aggiunge dettaglio
@@ -167,7 +124,14 @@
                 		$('#bottoneAggiungiDettaglio').hide();
                 	}
                 	
+                	aggiornaConteggi();
                 	
+                });
+                
+                function aggiornaConteggi() {
+                
+                   	var numeroLoop = $('.conteggi').length / 3;
+
                 	var imponibile =0;
                 	var iva = 22;
                 	var totaleFattura;
@@ -186,11 +150,12 @@
                     	imponibile = imponibile + risultato;
                     	totaleFattura = imponibile + (imponibile * iva / 100);
                 	}
+                	
                 	$("#imponibile").html("<b>" + imponibile + "</b>");
                 	$("#iva").html("<b>" + iva + "</b>");
                 	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
                 	
-                });
+                }
                 
             });
         </script>
