@@ -100,4 +100,8 @@ div#push {
 #formFatturaAdd label.error{ 
 	color: #900;
 	font-weight: normal;
-    }
+}
+
+.totali {
+	font-weight: bold;
+}

@@ -153,17 +153,17 @@
 				maxlength="6" /> <br><span class="errore">${form.errore[importoTmp]}</span>
 			</td>
 			<td>
-				<span id="totaleDettaglio_${ indiceDettaglio.index +1}" name="totaleDettaglio_${ indiceDettaglio.index +1}"></span>
+				<span id="totaleDettaglio_${ indiceDettaglio.index +1}" name="totaleDettaglio_${ indiceDettaglio.index +1}" class="totali"></span>
 			</td>
 		</tr>
 		</c:forEach>
 
 		<tr>
 			<td>
-				<button type="button" id="bottoneAggiungiDettaglio">Aggiungi dettaglio</button>
+				<button type="button" class="btn btn-primary" id="bottoneAggiungiDettaglio">Aggiungi dettaglio</button>
 			</td>
 			<td colspan='4'>
-				<button type="button" id="bottoneEliminaDettaglio" style="display: none;">Elimina dettaglio</button>
+				<button type="button" class="btn btn-primary" id="bottoneEliminaDettaglio" style="display: none;">Elimina dettaglio</button>
 			</td>
 		</tr>
     </table>
@@ -178,13 +178,13 @@
         
          <tr>
  			<td>
-				<span id="imponibile" name="imponibile"></span>
+				<span id="imponibile" name="imponibile" class="totali"></span>
 			</td>
 			<td>
 				<span id="iva" name="iva"></span>
 			</td>
 			<td>
-				<span id="totaleFattura" name="totaleFattura"></span>
+				<span id="totaleFattura" name="totaleFattura" class="totali"></span>
 			</td>
 		</tr>
 
@@ -194,8 +194,7 @@
 	<input type="hidden" id="numDettagli" name="numDettagli" />            
 
 		<fieldset>
-			<br /> 
-			<br /> <input type="submit" value="Salva fattura" class="sansLabel" />
+			<br /> <input type="submit" value="Salva fattura" class="btn btn-primary" />
 			<br />
 			<p class="${empty form.errore ? 'successo' : 'errore'}">${form.risultato}</p>
 		</fieldset>
@@ -207,5 +206,25 @@
 	<!-- Inserisco il footer -->
 	<%@ include file="footer.jsp" %>
 	
+	<!--  inserisco popup modal di errore -->
+	<div id="popupAlert" class="modal fade">
+ 		<div class="modal-dialog">
+  			<div class="modal-content">
+   				<div class="modal-header">
+<!--     				<button type="button" class="close" data-dismiss="modal">&times;</button> -->
+    				<h4 class="modal-title errore">Errore <i class="glyphicon glyphicon-exclamation-sign"></i></h4>
+   				</div>
+   				<div class="modal-body alert alert-danger">
+    				<p>Attenzione, i dati inseriti non sono corretti.</p>
+    				<p>Percortesia, correggi i dati e riprova a salvare la fattura.</p>
+   				</div>
+   				<div class="modal-footer">
+    				<button type="button" class="btn btn-danger" data-dismiss="modal">Chiudi</button>
+<!--     				<button type="button" class="btn btn-primary">Invia</button> -->
+   				</div>
+  			</div>
+ 		</div>
+	</div>
+	<!--   -->
     </body>
 </html>

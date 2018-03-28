@@ -14,6 +14,10 @@
         <script src="inc/lib/bootstrap/js/bootstrap-datepicker.min.js"></script>
         <script src="inc/lib/bootstrap/js/bootstrap-datepicker.it.min.js"></script>
         <script type="text/javascript" src="inc/lib/jquery/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="inc/lib/jquery/jquery.formatCurrency-1.4.0.min.js"></script>
+        <script type="text/javascript" src="inc/lib/jquery/jquery.formatCurrency.it-IT.js"></script> 
+        <script type="text/javascript" src="inc/lib/jquery/jquery.number.min.js"></script>
+        
         
         <script type="text/javascript">
             $(document).ready(function (ev1) {
@@ -47,12 +51,12 @@
               	  },
 
               	  submitHandler: function(form) { 
-              	    alert('I dati sono stati inseriti correttamente');
               	    form.submit();
+              	    alert('I dati sono stati inseriti correttamente');
               	  },
 
               	  invalidHandler: function() { 
-              	    alert('Attenzione, verificare i dati inseriti');
+              	    $("#popupAlert").modal('show');
               	  },      
               	});
             	
@@ -127,7 +131,7 @@
                 			"<td><input type='text' id='qta_" + numeroDettagli + "' name='qta_" + numeroDettagli + "' value='' size='3' maxlength='3' class='conteggi' /> <br></td>" +
                 			"<td><select id='unitaMisuraQta_" + numeroDettagli + "' name='unitaMisuraQta_" + numeroDettagli + "' class='conteggi'><option value='0'>Giorni</option><option value='1'>Ore</option></td>" +
                 			"<td><input type='text' id='importo_" + numeroDettagli + "' name='importo_" + numeroDettagli + "' value='' size='6' maxlength='6' class='conteggi' /> <br></td>" +
-                			"<td><span id='totaleDettaglio_" + numeroDettagli + "' name='totaleDettaglio_" + numeroDettagli + "' value='' </span><br></td>");
+                			"<td><span id='totaleDettaglio_" + numeroDettagli + "' name='totaleDettaglio_" + numeroDettagli + "' value='' class='totali'</span><br></td>");
                 });
                 
                 // Elimina dettaglio
@@ -151,6 +155,7 @@
                 	
                 });
                 
+               
                 // funzione che fa accettare solo i numeri
                 $('table#tableDettagli').on ("keydown", ".solo_numeri", function (e) {	
 
@@ -163,30 +168,36 @@
                         // home, end, left, right
                         (e.keyCode >= 35 && e.keyCode <= 39)) {
                  
+                    	
                         /*
                         // optional: replace commas with dots in real-time (for en-US locals)
                         if (e.keyCode === 188) {
                             e.preventDefault();
                             $(this).val($(this).val() + ".");
-                        }
+                        }*/
                  
                         // optional: replace decimal points (num pad) and dots with commas in real-time (for EU locals)
                         if (e.keyCode === 110 || e.keyCode === 190) {
                             e.preventDefault();
                             $(this).val($(this).val() + ",");
                         }
-                        */
-                 
+                        
+
                         return;
                     }
                     // block any non-number
                     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                         e.preventDefault();
                     }
+                    
+                    
+                	
                 });
                 
-                function aggiornaConteggi() {
+
                 
+                function aggiornaConteggi() {
+
                    	var numeroLoop = $('.conteggi').length / 3;
 
                 	var imponibile =0;
@@ -196,6 +207,9 @@
                     	var qta = $("#qta_"+i).val();
                     	var unitaMisuraQta = $("#unitaMisuraQta_"+i).val();
                     	var importo = $("#importo_"+i).val();
+						// Sostituisco il punto con la virgola
+                     	importo = importo.replace(/,/,".");
+
                     	var risultato;
                     	if (unitaMisuraQta==0){
                     		risultato = qta * importo;
@@ -208,10 +222,13 @@
                     	totaleFattura = imponibile + (imponibile * iva / 100);
                 	}
                 	
-                	$("#imponibile").html("<b>" + imponibile + "</b>");
-                	$("#iva").html("<b>" + iva + "</b>");
-                	$("#totaleFattura").html("<b>" + totaleFattura + "</b>");
                 	
+                	$("#imponibile").text(imponibile);
+                	$("#iva").html("<b>" + iva + "</b>");
+                	$("#totaleFattura").text(totaleFattura);
+                	
+                 	$('.totali').toNumber().formatCurrency({ 
+                 		region: 'it-IT' });
                 }
                 
             });

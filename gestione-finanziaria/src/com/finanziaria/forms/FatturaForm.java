@@ -69,6 +69,7 @@ public class FatturaForm {
             qta = getValoreCampo( request, CAMPO_QTA + j );
             unitaMisuraQta = getValoreCampo( request, CAMPO_UNITA_MISURA_QTA + j );
             importo = getValoreCampo( request, CAMPO_TARIFFA + j );
+            importo = importo.replace( ',', '.' );
 
             DettaglioFattura dettaglioFattura = new DettaglioFattura();
             dettaglioFattura.setId( j );
