@@ -96,3 +96,8 @@ div#push {
     line-height: 1.42857;
     color: #4C366C;
 } 
+
+#formFatturaAdd label.error{ 
+	color: #900;
+	font-weight: normal;
+    }

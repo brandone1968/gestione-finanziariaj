@@ -21,7 +21,7 @@
     <br>
     <h3>Nuova fattura</h3>
     <br>
-<form method="post" action="fatturaAdd">
+<form method="post" id="formFatturaAdd" name="formFatturaAdd" action="fatturaAdd">
     <table id="tableDettaglioFattura" class="table table-bordered table-hover">
         <tr>
             <td>    
@@ -135,7 +135,7 @@
 				maxlength="60" /> <br>
 			</td>
 			<td>
-				<input type="text" id="qta_${ indiceDettaglio.index +1}" name="qta_${ indiceDettaglio.index +1}" class="conteggi"
+				<input type="text" id="qta_${ indiceDettaglio.index +1}" name="qta_${ indiceDettaglio.index +1}" class="conteggi solo_numeri"
 				value="<c:out value="${dettaglio.qta}"/>" size="3"
 				<c:set var = "qtaTmp" value = "qta_${ indiceDettaglio.index +1}"/>
 				maxlength="3" /> <br><span class="errore">${form.errore[qtaTmp]}</span>
@@ -147,7 +147,7 @@
 				</select>
 			</td>
 			<td>
-				<input type="text" id="importo_${ indiceDettaglio.index +1}" name="importo_${ indiceDettaglio.index +1}" class="conteggi"
+				<input type="text" id="importo_${ indiceDettaglio.index +1}" name="importo_${ indiceDettaglio.index +1}" class="conteggi solo_numeri"
 				value="<c:out value="${dettaglio.tariffa}"/>" size="6"
 				<c:set var = "importoTmp" value = "importo_${ indiceDettaglio.index +1}"/>
 				maxlength="6" /> <br><span class="errore">${form.errore[importoTmp]}</span>
