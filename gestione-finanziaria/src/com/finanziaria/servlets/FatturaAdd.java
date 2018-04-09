@@ -23,7 +23,8 @@ public class FatturaAdd extends HttpServlet {
 
     public static final String  ATT_USER             = "fattura";
     public static final String  ATT_FORM             = "form";
-    public static final String  VISTA                = "/WEB-INF/fatturaAdd.jsp";
+    public static final String  VISTA_ADD            = "/WEB-INF/fatturaAdd.jsp";
+    public static final String  VISTA_DETTAGLIO      = "/WEB-INF/fattura.jsp";
     public static final Integer DITTA_DEFAULT_EMETTE = 1;
     public static final Integer DITTA_DEFAULT_RICEVE = 2;
     private DittaDao            dittaDao;
@@ -48,7 +49,7 @@ public class FatturaAdd extends HttpServlet {
         request.setAttribute( "ditta2", dittaDao.findDatiDitta( idDitta2 ) );
 
         request.setAttribute( "fattura", fatturaDao.impostaFatturaDefault() );
-        this.getServletContext().getRequestDispatcher( VISTA ).forward( request, response );
+        this.getServletContext().getRequestDispatcher( VISTA_ADD ).forward( request, response );
     }
 
     protected void doPost( HttpServletRequest request, HttpServletResponse response )
@@ -73,11 +74,24 @@ public class FatturaAdd extends HttpServlet {
         Fattura fattura = form.aggiungeFattura( request );
 
         /* Memorizzazione del form e del bean nell'oggetti request */
-        request.setAttribute( ATT_FORM, form );
-        request.setAttribute( ATT_USER, fattura );
+        // request.setAttribute( ATT_FORM, form );
+        // request.setAttribute( ATT_USER, fattura );
+        // request.setAttribute( "idFattura", "2" );
+        String risultato = form.getRisultato();
+        String vista = "";
+        if ( risultato.equals( "Errore nell'inserimento." ) ) {
+            request.setAttribute( ATT_FORM, form );
+            request.setAttribute( ATT_USER, fattura );
+            vista = VISTA_ADD;
+        } else {
+            request.setAttribute( "fattura", fatturaDao.find( 2 ) );
+            vista = VISTA_DETTAGLIO;
+        }
 
-        /* Transmission de la paire d'objets request/response à notre JSP */
-        this.getServletContext().getRequestDispatcher( VISTA ).forward( request, response );
+        /*
+         * Trasmissione della coppia di oggetti request/response alla pagina JSP
+         */
+        this.getServletContext().getRequestDispatcher( vista ).forward( request, response );
     }
 
 }
