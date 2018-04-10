@@ -93,7 +93,7 @@
 </p>
 	
 	
-		
+		<div id="push"> </div>
 	</div> 
 	<!-- Inserisco il footer -->
 	<%@ include file="footer.jsp" %>

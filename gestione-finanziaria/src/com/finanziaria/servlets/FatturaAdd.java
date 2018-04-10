@@ -74,9 +74,6 @@ public class FatturaAdd extends HttpServlet {
         Fattura fattura = form.aggiungeFattura( request );
 
         /* Memorizzazione del form e del bean nell'oggetti request */
-        // request.setAttribute( ATT_FORM, form );
-        // request.setAttribute( ATT_USER, fattura );
-        // request.setAttribute( "idFattura", "2" );
         String risultato = form.getRisultato();
         String vista = "";
         if ( risultato.equals( "Errore nell'inserimento." ) ) {
