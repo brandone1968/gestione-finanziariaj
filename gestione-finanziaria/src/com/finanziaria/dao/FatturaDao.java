@@ -1,6 +1,6 @@
 package com.finanziaria.dao;
 
-import java.time.LocalDate;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.finanziaria.beans.Fattura;
@@ -19,15 +19,16 @@ public interface FatturaDao {
     // metodo per ricavare i dati di una fattura dato l'id
     Fattura find( Integer id ) throws DaoException;
 
-    // metodo per creare una fattura base con il primo numero libero per una nuova fattura
+    // metodo per creare una fattura base con il primo numero libero per una
+    // nuova fattura
     Fattura impostaFatturaDefault() throws DaoException;
-    
+
     // metodo per ricavare una fattura dato numero fattura e anno della stessa
-    Fattura find( Integer num, String anno);
-    
+    Fattura find( Integer num, Integer anno ) throws SQLException;
+
     // metodo per ricavare una fattura dato numero fattura e data della stessa
-    //Fattura find( Integer num, LocalDate data);
-    
+    // Fattura find( Integer num, LocalDate data);
+
     // metodo per inserire la fattura
-    void creaFattura( Fattura fattura);
+    void creaFattura( Fattura fattura ) throws SQLException;
 }

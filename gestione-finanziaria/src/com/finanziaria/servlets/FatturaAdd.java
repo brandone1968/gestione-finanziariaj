@@ -1,6 +1,7 @@
 package com.finanziaria.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -71,7 +72,13 @@ public class FatturaAdd extends HttpServlet {
          * Chiamata al'elaborazione e alla validazione della richiesta e al
          * recupero del bean risultante
          */
-        Fattura fattura = form.aggiungeFattura( request );
+        Fattura fattura = null;
+        try {
+            fattura = form.aggiungeFattura( request );
+        } catch ( SQLException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         /* Memorizzazione del form e del bean nell'oggetti request */
         String risultato = form.getRisultato();
@@ -81,7 +88,15 @@ public class FatturaAdd extends HttpServlet {
             request.setAttribute( ATT_USER, fattura );
             vista = VISTA_ADD;
         } else {
-            request.setAttribute( "fattura", fatturaDao.find( 2 ) );
+            // devi passare solo l'anno
+            try {
+                request.setAttribute( "fattura",
+                        fatturaDao.find( fattura.getNumFattura(), fattura.getDataFattura().getYear() ) );
+            } catch ( SQLException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            request.setAttribute( "salvataggio_fattura", "ok" );
             vista = VISTA_DETTAGLIO;
         }
 

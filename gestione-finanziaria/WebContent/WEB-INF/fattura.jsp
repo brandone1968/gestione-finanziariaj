@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix = "fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,6 +23,7 @@
     <h3>Dettagli fattura</h3>
     <br>
 
+	<span><input type="hidden" name="salvataggio_fattura" id="salvataggio_fattura" value="${salvataggio_fattura }"></span>
     <table id="tableDettaglioFattura" class="table table-bordered table-hover">
         <tr>
             <td><strong><c:out value="${ fattura.ditta1.denominazione }" /></strong></td><td><strong><c:out value="${ fattura.ditta2.denominazione }" /></strong></td>
@@ -40,7 +42,8 @@
     <br>
     <table id="tableFattura" class="table table-bordered table-hover">
         <tr>
-            <td colspan="2">Fattura N° <strong><c:out value="${ fattura.numFattura }" /></strong> del <strong><c:out value="${ fattura.dataFattura }" /></strong></td>
+            <fmt:parseDate pattern="yyyy-MM-dd" value="${fattura.dataFattura}" var="dataFattura" />
+            <td>Fattura N° <strong><c:out value="${ fattura.numFattura }" /></strong> del <strong><fmt:formatDate value="${dataFattura}" pattern="dd/MM/yyyy" /></strong>&nbsp&nbsp&nbsp-&nbsp&nbsp&nbsp<c:out value="${ fattura.descrizione }" /></td>
         </tr>
     </table>
     <br>
@@ -96,6 +99,26 @@
 		<div id="push"> </div>
 	</div> 
 	<!-- Inserisco il footer -->
-	<%@ include file="footer.jsp" %>
+	<%@ include file="footerfattura.jsp" %>
+	
+	<!--  inserisco popup modal di salvataggio della fattura -->
+	<div id="popupSaveOK" class="modal fade">
+ 		<div class="modal-dialog">
+  			<div class="modal-content">
+   				<div class="modal-header">
+<!--     				<button type="button" class="close" data-dismiss="modal">&times;</button> -->
+    				<h4 class="modal-title successo">Ok <i class="glyphicon glyphicon-ok"></i></h4>
+   				</div>
+   				<div class="modal-body alert alert-success">
+    				<p>Attenzione, i dati sono stati salvati correttamente.</p>
+   				</div>
+   				<div class="modal-footer">
+    				<button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>
+<!--     				<button type="button" class="btn btn-primary">Invia</button> -->
+   				</div>
+  			</div>
+ 		</div>
+	</div>
+	<!--   -->
     </body>
 </html>

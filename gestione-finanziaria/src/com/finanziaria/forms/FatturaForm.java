@@ -1,5 +1,6 @@
 package com.finanziaria.forms;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.finanziaria.beans.DettaglioFattura;
 import com.finanziaria.beans.Fattura;
 import com.finanziaria.dao.DaoFactory;
+import com.finanziaria.dao.DittaDao;
 import com.finanziaria.dao.FatturaDao;
 
 public class FatturaForm {
@@ -32,6 +34,7 @@ public class FatturaForm {
     private String              risultato;
     private Map<String, String> errore                      = new HashMap<String, String>();
     private FatturaDao          fatturaDao;
+    private DittaDao            dittaDao;
 
     private String              descrizioneFatturaProva     = "";
 
@@ -43,7 +46,7 @@ public class FatturaForm {
         return errore;
     }
 
-    public Fattura aggiungeFattura( HttpServletRequest request ) {
+    public Fattura aggiungeFattura( HttpServletRequest request ) throws SQLException {
         String numFattura = getValoreCampo( request, CAMPO_NUM_FATTURA );
         String descrizione = getValoreCampo( request, CAMPO_DESCRIZIONE );
         String dataFattura = getValoreCampo( request, CAMPO_DATA_FATTURA );
@@ -51,6 +54,9 @@ public class FatturaForm {
         String ditta1 = getValoreCampo( request, CAMPO_DITTA1 );
         String ditta2 = getValoreCampo( request, CAMPO_DITTA2 );
         Integer numDettagli = Integer.parseInt( getValoreCampo( request, CAMPO_NUM_DETTAGLI ) );
+        Float imponibile = (float) 0;
+        Float iva = (float) 0;
+        Float totFattura = (float) 0;
 
         Fattura fattura = new Fattura();
 
@@ -81,7 +87,7 @@ public class FatturaForm {
             } catch ( Exception e ) {
                 setErrore( CAMPO_QTA + j, e.getMessage() );
             }
-
+            imponibile = imponibile + ( Integer.parseInt( qta ) * Float.parseFloat( importo ) );
             dettaglioFattura.setUnitaMisuraQta( Integer.parseInt( unitaMisuraQta ) );
 
             try {
@@ -90,6 +96,11 @@ public class FatturaForm {
             } catch ( Exception e ) {
                 setErrore( CAMPO_TARIFFA + j, e.getMessage() );
             }
+            // imposto il valore dell'imponibile della fattura
+            fattura.setImponibile( imponibile );
+            // calcolo e imposto il valore dell'iva della fattura
+            iva = iva + ( imponibile / (float) ( 100 * 22 ) );
+            fattura.setIva( iva );
 
             dettagliFattura.add( dettaglioFattura );
         }
@@ -136,13 +147,27 @@ public class FatturaForm {
             fattura.setDataPagamento( data2 );
         }
 
+        // Imposto la percentuale dell'IVA a 22 in seguito dovrà essere
+        // recuperato il valore
+        // in archivio in base alla data della fattura
+        fattura.setPercentualeIVA( (float) 22 );
+
+        // Imposto il totale fattura dato dall'iva + l'imponibile
+        totFattura = iva + imponibile;
+        fattura.setTotFattura( totFattura );
+
         if ( errore.isEmpty() ) {
             DaoFactory daoFactory = DaoFactory.getInstance();
+            this.dittaDao = daoFactory.getDittaDao();
+            fattura.setDitta1( dittaDao.findDatiDitta( Integer.parseInt( ditta1 ) ) );
+            fattura.setDitta2( dittaDao.findDatiDitta( Integer.parseInt( ditta2 ) ) );
+
             this.fatturaDao = daoFactory.getFatturaDao();
 
-            Fattura fatturaProva = fatturaDao.find( 1 );
-            descrizioneFatturaProva = fatturaProva.getDescrizione();
-            risultato = "Fattura inserita." + descrizioneFatturaProva;
+            fatturaDao.creaFattura( fattura );
+            // Fattura fatturaProva = fatturaDao.find( 1 );
+            // descrizioneFatturaProva = fatturaProva.getDescrizione();
+            risultato = "Fattura inserita." + fattura.getDescrizione();
         } else {
             risultato = "Errore nell'inserimento.";
         }

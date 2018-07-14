@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.finanziaria.beans.DettaglioFattura;
@@ -396,8 +397,8 @@ public class FatturaDaoImpl implements FatturaDao {
         fattura.setDettagliFattura( dettagli );
         return fattura;
     }
- 
-    public Fattura find( Integer num, String annoFattura) {
+
+    public Fattura find( Integer num, Integer annoFattura ) throws SQLException {
         DettaglioFatturaDao dettaglioFatturaDao;
         DaoFactory daoFactory = DaoFactory.getInstance();
         dettaglioFatturaDao = daoFactory.getDettaglioFatturaDao();
@@ -405,6 +406,8 @@ public class FatturaDaoImpl implements FatturaDao {
         Fattura fattura = new Fattura();
 
         Connection connexion = null;
+        connexion = daoFactory.getConnection();
+
         PreparedStatement preparedStatement = null;
         ResultSet risultato = null;
 
@@ -417,11 +420,11 @@ public class FatturaDaoImpl implements FatturaDao {
                     + " from fattura"
                     + " Join ditta as ditta1 on id_ditta1 = ditta1.id_ditta"
                     + " Join ditta as ditta2 on id_ditta2 = ditta2.id_ditta"
-                    + " where fattura_num=? and YEAR(fattura_data_fattura)=?";
+                    + " where fattura_num_fattura=? and YEAR(fattura_data_fattura)=?";
 
             preparedStatement = connexion.prepareStatement( sql );
             preparedStatement.setInt( 1, num );
-            preparedStatement.setString(2, annoFattura );
+            preparedStatement.setInt( 2, annoFattura );
             risultato = preparedStatement.executeQuery();
             risultato.beforeFirst();
             if ( risultato.next() ) {
@@ -503,7 +506,7 @@ public class FatturaDaoImpl implements FatturaDao {
 
                 fattura.setDitta1( dittaTmp );
                 fattura.setDitta2( dittaTmp2 );
-                
+
                 // ricavo i dettagli della fattura
                 fattura.setDettagliFattura( dettaglioFatturaDao.findAllByFattura( id ) );
             }
@@ -521,111 +524,115 @@ public class FatturaDaoImpl implements FatturaDao {
 
         return fattura;
     }
-    
-    public  void creaFattura( Fattura fattura) {
-    	//
-    	// occorre inserire i dati sia nella tabella fattura che nella tabella dettagli
-    	// Utilizzare la trasaction per definire un blocco di query da eseguire
-    	// in caso di errore rolback automatico
-    	// vedi:
+
+    public void creaFattura( Fattura fattura ) throws SQLException {
+        //
+        // occorre inserire i dati sia nella tabella fattura che nella tabella
+        // dettagli
+        // Utilizzare la trasaction per definire un blocco di query da eseguire
+        // in caso di errore rolback automatico
+        // vedi:
         // bConnection.setAutoCommit(false); to start a transaction block.
         // dbConnection.commit(); to end a transaction block.
 
-    	
-    	
-    	// Prima di inserire la fattura occorre verificare che no ci sia già
-    	// una fattura con lo stesso numero e anno 
+        // Prima di inserire la fattura occorre verificare che non ci sia già
+        // una fattura con lo stesso numero e anno
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
         ResultSet risultato = null;
-    	
-    	// Inserimento fattura
+
+        // calcolo il valore del timestamp, in modo che sia identico per tutta
+        // la fattura
+        Calendar calendar = Calendar.getInstance();
+        java.sql.Timestamp valoreTimestamp = new java.sql.Timestamp( calendar.getTime().getTime() );
+
+        // Inserimento fattura
         try {
+
             connexion = daoFactory.getConnection();
-            String sql = "INSERT INTO fattura (fattura_num_fattura, descrizione, fattura_data_fattura, fattura_data_pagamento, fattura_imponibile, percentuale_IVA, fattura_iva, fattura_tot_fattura , fattura_note_fattura, id_ditta1, id_ditta2  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\";";
-            
-            preparedStatement = connexion.prepareStatement( sql );
-            preparedStatement.setInt(1, fattura.getNumFattura());
-            preparedStatement.setString(2, fattura.getDescrizione());
-            preparedStatement.setString(3, fattura.getDataFattura().toString());
-            preparedStatement.setString(4, fattura.getDataPagamento().toString());
-            preparedStatement.setFloat(5, fattura.getImponibile());
-            preparedStatement.setFloat(6, fattura.getPercentualeIVA());
-            preparedStatement.setFloat(7, fattura.getIva());
-            preparedStatement.setFloat(8, fattura.getTotFattura());
-            preparedStatement.setString(9, fattura.getNoteFattura());
-            preparedStatement.setInt(10, fattura.getDitta1().getId_ditta());
-            preparedStatement.setInt(11, fattura.getDitta2().getId_ditta());
+            connexion.setAutoCommit( false );
+
+            String sql = "INSERT INTO fattura (fattura_num_fattura, descrizione, fattura_data_fattura, fattura_data_pagamento, fattura_imponibile, percentuale_IVA, fattura_iva, fattura_tot_fattura , fattura_note_fattura, id_ditta1, id_ditta2  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            preparedStatement = connexion.prepareStatement( sql, PreparedStatement.RETURN_GENERATED_KEYS );
+            preparedStatement.setInt( 1, fattura.getNumFattura() );
+            preparedStatement.setString( 2, fattura.getDescrizione() );
+            preparedStatement.setString( 3, fattura.getDataFattura().toString() );
+            if ( fattura.getDataPagamento() != null ) {
+                preparedStatement.setString( 4, fattura.getDataPagamento().toString() );
+            } else {
+                preparedStatement.setString( 4, null );
+            }
+            preparedStatement.setFloat( 5, fattura.getImponibile() );
+            preparedStatement.setFloat( 6, fattura.getPercentualeIVA() );
+            preparedStatement.setFloat( 7, fattura.getIva() );
+            preparedStatement.setFloat( 8, fattura.getTotFattura() );
+            preparedStatement.setString( 9, fattura.getNoteFattura() );
+            preparedStatement.setInt( 10, fattura.getDitta1().getId_ditta() );
+            preparedStatement.setInt( 11, fattura.getDitta2().getId_ditta() );
             int statut = preparedStatement.executeUpdate();
             /* Analyse du statut retourné par la requête d'insertion */
             if ( statut == 0 ) {
-            	throw new DaoException( "Errore nell'inserimento dei dati" );
+                throw new DaoException( "Errore nell'inserimento dei dati" );
             }
             /* recupero l'id inserito */
             risultato = preparedStatement.getGeneratedKeys();
+            int id = 1;
             if ( risultato.next() ) {
                 /* inizializzazione della proprità id della fattura */
-                fattura.setId(risultato.getInt(1));
+                // fattura.setId( risultato.getInt( 1 ) );
+                id = risultato.getInt( 1 );
                 // Salvo i dettagli della fattura
             } else {
                 throw new DaoException( "Errore nell'inserimento dei dati, nessun ID di inserimento recuperato." );
             }
-        } catch ( SQLException e ) {
-            throw new DaoException( e );
-        } finally {
-            try {
-                if ( connexion != null ) {
-                    connexion.close();
+
+            for ( DettaglioFattura dettaglioFattura : fattura.getDettagliFattura() ) {
+                //
+                // Inserimento dettaglio fattura
+
+                String sql2 = "INSERT INTO dettaglio_fattura (descrizione, qta, unita_misura_qta, tariffa, dettaglio_fattura_time_stamp, fattura_id ) VALUES (?, ?, ?, ?, ?, ?)";
+
+                preparedStatement = connexion.prepareStatement( sql2, Statement.RETURN_GENERATED_KEYS );
+                preparedStatement.setString( 1, dettaglioFattura.getDescrizione() );
+                preparedStatement.setInt( 2, dettaglioFattura.getQta() );
+                preparedStatement.setInt( 3, dettaglioFattura.getUnitaMisuraQta() );
+                preparedStatement.setFloat( 4, dettaglioFattura.getTariffa() );
+                preparedStatement.setTimestamp( 5, valoreTimestamp );
+                preparedStatement.setInt( 6, id );
+
+                int statut2 = preparedStatement.executeUpdate();
+                /* Analyse du statut retourné par la requête d'insertion */
+                if ( statut2 == 0 ) {
+                    throw new DaoException( "Errore nell'inserimento dei dati" );
                 }
-            } catch ( SQLException e ) {
-                throw new DaoException( "Impossibile comunicare con la base dati" );
+                /* recupero l'id inserito */
+                risultato = preparedStatement.getGeneratedKeys();
+                if ( risultato.next() ) {
+                    /* inizializzazione della proprità id della fattura */
+                    fattura.setId( risultato.getInt( 1 ) );
+                } else {
+                    throw new DaoException( "Errore nell'inserimento dei dati, nessun ID di inserimento recuperato." );
+                }
+            } // chiude ciclo dettaglio fattura
+
+            // Salvo la fattura e i relativi dettagli
+            connexion.commit();
+
+        } catch ( SQLException e ) {
+            if ( connexion != null ) {
+                connexion.rollback();
+                System.out.println( "Connection rollback..." );
+            }
+
+            e.printStackTrace();
+
+        } finally {
+            if ( connexion != null && !connexion.isClosed() ) {
+                connexion.close();
             }
         }
-        
-        //
-    	// Inserimento dettaglio fattura 
-        try {
-            connexion = daoFactory.getConnection();
-            String sql = "INSERT INTO dettaglio_fattura (fattura_num_fattura, descrizione, fattura_data_fattura, fattura_data_pagamento, fattura_imponibile, percentuale_IVA, fattura_iva, fattura_tot_fattura , fattura_note_fattura, id_ditta1, id_ditta2  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\";";
-            
-            preparedStatement = connexion.prepareStatement( sql );
-            preparedStatement.setInt(1, fattura.getNumFattura());
-            preparedStatement.setString(2, fattura.getDescrizione());
-            preparedStatement.setString(3, fattura.getDataFattura().toString());
-            preparedStatement.setString(4, fattura.getDataPagamento().toString());
-            preparedStatement.setFloat(5, fattura.getImponibile());
-            preparedStatement.setFloat(6, fattura.getPercentualeIVA());
-            preparedStatement.setFloat(7, fattura.getIva());
-            preparedStatement.setFloat(8, fattura.getTotFattura());
-            preparedStatement.setString(9, fattura.getNoteFattura());
-            preparedStatement.setInt(10, fattura.getDitta1().getId_ditta());
-            preparedStatement.setInt(11, fattura.getDitta2().getId_ditta());
-            int statut = preparedStatement.executeUpdate();
-            /* Analyse du statut retourné par la requête d'insertion */
-            if ( statut == 0 ) {
-            	throw new DaoException( "Errore nell'inserimento dei dati" );
-            }
-            /* recupero l'id inserito */
-            risultato = preparedStatement.getGeneratedKeys();
-            if ( risultato.next() ) {
-                /* inizializzazione della proprità id della fattura */
-                fattura.setId(risultato.getInt(1));
-                // Salvo i dettagli della fattura
-            } else {
-                throw new DaoException( "Errore nell'inserimento dei dati, nessun ID di inserimento recuperato." );
-            }
-        } catch ( SQLException e ) {
-            throw new DaoException( e );
-        } finally {
-            try {
-                if ( connexion != null ) {
-                    connexion.close();
-                }
-            } catch ( SQLException e ) {
-                throw new DaoException( "Impossibile comunicare con la base dati" );
-            }
-        }
+
     }
-    
 
 }

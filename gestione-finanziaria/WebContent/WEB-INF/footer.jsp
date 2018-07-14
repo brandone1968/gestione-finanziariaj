@@ -52,7 +52,7 @@
 
               	  submitHandler: function(form) { 
               	    form.submit();
-              	    alert('I dati sono stati inseriti correttamente');
+              	    //alert('I dati sono stati inseriti correttamente');
               	  },
 
               	  invalidHandler: function() { 
@@ -102,7 +102,7 @@
                 // $(".conteggi").on('change keyup paste', function () {   <-- evento diretto
             	// $(document).on ("change keyup paste", ".conteggi", function () { <-- evento delegato 
             	// Nel secondo caso la rilevazione dell'evento viene delegata a document che controllerà tutti i figli
-            	// per motivi di performance è meglio delegare il cotrollo ad un padre più vicino, in questo caso la tabella tableDettagli
+            	// per motivi di performance è meglio delegare il controllo ad un padre più vicino, in questo caso la tabella tableDettagli
             	// --------------------------------------------------------------------------------------------------------------------------
             	$('table#tableDettagli').on ("change keyup paste", ".conteggi", function () {
             		aggiornaConteggi();
